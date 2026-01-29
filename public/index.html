@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon OPC UA Dojo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <style>
+        body {
+            background-color: #0f172a; /* Slate 900 */
+            background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .neon-input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #334155;
+            color: #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .neon-input:focus {
+            outline: none;
+            border-color: #3b82f6; /* Blue 500 */
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+        .neon-btn {
+            background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%);
+            transition: all 0.3s ease;
+        }
+        .neon-btn:hover {
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+            transform: translateY(-2px);
+        }
+        /* Scrollbar personalizzata per i log */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+    </style>
+</head>
+<body class="text-slate-200 h-screen flex items-center justify-center p-4">
+
+    <div class="glass-panel rounded-2xl shadow-2xl w-full max-w-4xl p-8 flex flex-col md:flex-row gap-8">
+        
+        <div class="w-full md:w-1/3 space-y-6">
+            <div>
+                <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-400 mb-2">OPC UA Dojo</h1>
+                <p class="text-xs text-slate-400">Security Certificate Laboratory</p>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs uppercase tracking-wider text-slate-500 mb-1">PLC IP Address</label>
+                    <input type="text" id="plcIp" value="192.168.0.100" class="neon-input w-full rounded-lg px-4 py-3 font-mono text-sm">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-slate-500 mb-1">User (Opt)</label>
+                        <input type="text" id="plcUser" placeholder="admin" class="neon-input w-full rounded-lg px-4 py-2 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs uppercase tracking-wider text-slate-500 mb-1">Pass (Opt)</label>
+                        <input type="password" id="plcPass" placeholder="***" class="neon-input w-full rounded-lg px-4 py-2 text-sm">
+                    </div>
+                </div>
+
+                <button onclick="connectPlc()" class="neon-btn w-full py-3 rounded-lg font-bold text-white shadow-lg mt-4">
+                    CONNETTI AL PLC
+                </button>
+            </div>
+            
+            <div class="text-xs text-slate-500 mt-8 border-t border-white/10 pt-4">
+                Status: <span id="statusIndicator" class="text-red-400">Disconnected</span>
+            </div>
+        </div>
+
+        <div class="w-full md:w-2/3 flex flex-col">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-xs uppercase tracking-wider text-slate-500">System Logs</span>
+                <span class="text-[10px] bg-slate-800 px-2 py-1 rounded text-slate-400 font-mono">TCP/4840</span>
+            </div>
+            <div id="logs" class="bg-black/40 rounded-xl flex-1 p-4 font-mono text-sm overflow-y-auto h-80 border border-white/5 space-y-2">
+                <div class="text-slate-500">System initialized... waiting for input.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const socket = io();
+        const logsDiv = document.getElementById('logs');
+        
+        function connectPlc() {
+            const ip = document.getElementById('plcIp').value;
+            const user = document.getElementById('plcUser').value;
+            const pass = document.getElementById('plcPass').value;
+            
+            addLog('system', `Inizio procedura connessione verso ${ip}...`);
+            socket.emit('connect-plc', { ip, username: user, password: pass });
+        }
+
+        function addLog(type, msg) {
+            const el = document.createElement('div');
+            let color = "text-slate-300";
+            let icon = "➤";
+
+            if(type === 'error') { color = "text-red-400"; icon = "✖"; }
+            if(type === 'success') { color = "text-green-400"; icon = "✔"; }
+            if(type === 'warning') { color = "text-yellow-400"; icon = "⚠"; }
+            if(type === 'info') { color = "text-blue-400"; icon = "ℹ"; }
+
+            el.className = `${color} break-words`;
+            el.innerHTML = `<span class="opacity-50 mr-2">${icon}</span> ${msg}`;
+            logsDiv.appendChild(el);
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+        }
+
+        socket.on('log', (data) => {
+            addLog(data.type, data.msg);
+        });
+    </script>
+</body>
+</html>

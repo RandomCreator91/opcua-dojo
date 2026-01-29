@@ -1,0 +1,57 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# --- Dipendenze (Pesanti e inutili da caricare) ---
+node_modules/
+client/node_modules/
+
+# --- Build di produzione ---
+dist/
+build/
+client/dist/
+
+# --- SICUREZZA (CRITICO) ---
+# Ignora tutta la cartella PKI (contiene le chiavi private!)
+pki/
+*.pem
+*.key
+*.crt
+*.der
+
+# --- Variabili d'Ambiente (Password e Config) ---
+.env
+.env.local
+.env.*.local
+
+# --- Log e file di sistema ---
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+
+# --- Cartelle IDE ---
+.vscode/
+.idea/

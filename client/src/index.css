@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Google Sans", "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --color-factory-dark: #050508;
+  --color-auto-red: #ff2a2a;
+  --color-auto-green: #00ff9d;
+  --color-auto-blue: #00a2ff;
+  --color-auto-orange: #ff9d00;
+}
+
+body {
+  background-color: var(--color-factory-dark);
+  color: #e2e8f0;
+  overflow: hidden; /* FONDAMENTALE per evitare scrollbar esterne */
+}
+
+/* Scrollbar nascosta */
+.scrollbar-hide::-webkit-scrollbar { width: 0px; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }

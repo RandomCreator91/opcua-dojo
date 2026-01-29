@@ -11,8 +11,8 @@ Welcome to the **OPC UA Dojo**. This project is a "Proof of Concept" designed to
 
 It is not just a standard OPC UA client: it is a **Reactive Explorer** that allows you to manipulate complex data types and natively integrate **WinCC Unified** HMI panels.
 
-![Project Screenshot]([https://i.ibb.co/tprGGL8T/bild.png)
-*(Note: Upload a screenshot to your repo and replace the link above)*
+![Project Screenshot](https://i.ibb.co/tprGGL8T/bild.png)
+
 
 ## ✨ Key Features
 
